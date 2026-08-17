@@ -2,446 +2,80 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#c9eeeb">
   <title>36 | LENORMAND</title>
-
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: Georgia, "Times New Roman", "Hiragino Mincho ProN",
-        "Yu Mincho", serif;
-      color: #435f63;
-      background:
-        radial-gradient(circle at 20% 10%, rgba(255,255,255,.9), transparent 24%),
-        radial-gradient(circle at 80% 30%, rgba(255,255,255,.55), transparent 22%),
-        linear-gradient(160deg, #dff8f5 0%, #bce8e7 45%, #eaf8f4 100%);
-    }
-
-    .app {
-      width: min(100%, 430px);
-      min-height: 100vh;
-      margin: 0 auto;
-      padding: 58px 24px 40px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .bubble {
-      position: absolute;
-      border: 1px solid rgba(255,255,255,.7);
-      border-radius: 50%;
-      background: rgba(255,255,255,.15);
-      box-shadow: inset 0 0 10px rgba(255,255,255,.5);
-      pointer-events: none;
-    }
-
-    .b1 { width: 36px; height: 36px; top: 8%; left: 8%; }
-    .b2 { width: 18px; height: 18px; top: 16%; right: 13%; }
-    .b3 { width: 52px; height: 52px; bottom: 15%; right: -10px; }
-    .b4 { width: 22px; height: 22px; bottom: 28%; left: 7%; }
-
-    header {
-      text-align: center;
-      margin-bottom: 42px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .shell {
-      font-size: 42px;
-      margin-bottom: 8px;
-      filter: drop-shadow(0 3px 5px rgba(107,148,147,.18));
-    }
-
-    .number {
-      margin: 0;
-      font-size: 82px;
-      line-height: .95;
-      font-weight: normal;
-      letter-spacing: 2px;
-      color: #b3945f;
-      text-shadow: 0 2px 0 rgba(255,255,255,.7);
-    }
-
-    .title {
-      margin-top: 10px;
-      font-size: 23px;
-      letter-spacing: 5px;
-      color: #55777a;
-    }
-
-    .subtitle {
-      margin-top: 12px;
-      font-size: 12px;
-      letter-spacing: 2px;
-      color: #809b9d;
-    }
-
-    .menu {
-      display: grid;
-      gap: 17px;
-      position: relative;
-      z-index: 1;
-    }
-
-    button {
-      width: 100%;
-      min-height: 78px;
-      border: 1px solid rgba(190,165,113,.45);
-      border-radius: 22px;
-      background:
-        linear-gradient(145deg,
-          rgba(255,255,255,.88),
-          rgba(245,250,246,.66));
-      box-shadow:
-        0 10px 24px rgba(76,125,126,.12),
-        inset 0 1px 2px rgba(255,255,255,1);
-      color: #48676a;
-      font-family: inherit;
-      cursor: pointer;
-      transition: transform .15s ease;
-    }
-
-    button:active {
-      transform: scale(.98);
-    }
-
-    .main-button {
-      display: flex;
-      align-items: center;
-      padding: 13px 22px;
-      text-align: left;
-    }
-
-    .icon {
-      width: 50px;
-      font-size: 28px;
-      text-align: center;
-      margin-right: 14px;
-    }
-
-    .button-text strong {
-      display: block;
-      font-size: 17px;
-      font-weight: normal;
-      letter-spacing: 2px;
-    }
-
-    .button-text span {
-      display: block;
-      margin-top: 5px;
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      font-size: 11px;
-      color: #91a5a5;
-    }
-
-    .footer {
-      margin-top: 44px;
-      text-align: center;
-      font-size: 12px;
-      font-style: italic;
-      letter-spacing: 2px;
-      color: #789899;
-    }
-
-    /* Reading screen */
-
-    .screen {
-      display: none;
-      position: relative;
-      z-index: 2;
-    }
-
-    .screen.active {
-      display: block;
-    }
-
-    #home.active {
-      display: block;
-    }
-
-    #home {
-      display: none;
-    }
-
-    .back {
-      min-height: auto;
-      width: auto;
-      padding: 9px 16px;
-      border-radius: 20px;
-      margin-bottom: 30px;
-      font-size: 13px;
-    }
-
-    .reading-title {
-      text-align: center;
-      font-size: 25px;
-      letter-spacing: 3px;
-      font-weight: normal;
-      margin: 10px 0 8px;
-    }
-
-    .reading-note {
-      text-align: center;
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      font-size: 12px;
-      color: #80999a;
-      margin-bottom: 30px;
-    }
-
-    .draw-button {
-      min-height: 58px;
-      font-size: 15px;
-      letter-spacing: 2px;
-    }
-
-    .card-area {
-      margin-top: 30px;
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: nowrap;
-    }
-
-    .card {
-      flex: 1;
-      max-width: 170px;
-      min-height: 230px;
-      padding: 20px 8px;
-      border-radius: 18px;
-      border: 1px solid rgba(184,151,91,.55);
-      background:
-        linear-gradient(160deg,
-          rgba(255,255,255,.94),
-          rgba(230,247,242,.9));
-      box-shadow:
-        0 13px 25px rgba(67,110,111,.16),
-        inset 0 0 0 4px rgba(255,255,255,.45);
-      text-align: center;
-      animation: appear .45s ease;
-    }
-
-    @keyframes appear {
-      from {
-        opacity: 0;
-        transform: translateY(10px) scale(.96);
-      }
-      to {
-        opacity: 1;
-        transform: none;
-      }
-    }
-
-    .card-number {
-      font-size: 14px;
-      color: #aa8d59;
-    }
-
-    .card-symbol {
-      font-size: 58px;
-      margin: 27px 0 20px;
-    }
-
-    .card-name {
-      font-size: 16px;
-      letter-spacing: 1px;
-    }
-
-    .card-jp {
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      font-size: 12px;
-      margin-top: 5px;
-      color: #71898a;
-    }
-
-    .card-keyword {
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      font-size: 11px;
-      margin-top: 16px;
-      line-height: 1.6;
-      color: #839798;
-    }
-
-    .three .card {
-      min-width: 0;
-      min-height: 205px;
-      padding-left: 4px;
-      padding-right: 4px;
-    }
-
-    .three .card-symbol {
-      font-size: 38px;
-      margin: 25px 0 18px;
-    }
-
-    .three .card-name {
-      font-size: 11px;
-    }
-
-    .three .card-keyword {
-      font-size: 9px;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-
 <div class="app">
+  <div class="sea-light sea-light-1"></div><div class="sea-light sea-light-2"></div>
+  <i class="bubble b1"></i><i class="bubble b2"></i><i class="bubble b3"></i><i class="bubble b4"></i>
 
-  <span class="bubble b1"></span>
-  <span class="bubble b2"></span>
-  <span class="bubble b3"></span>
-  <span class="bubble b4"></span>
-
-  <!-- HOME -->
-  <main id="home" class="active">
-
-    <header>
+  <section id="home" class="screen active">
+    <header class="hero">
       <div class="shell">🐚</div>
-      <h1 class="number">36</h1>
-      <div class="title">LENORMAND</div>
-      <div class="subtitle">whispers from the sea</div>
+      <h1>36</h1>
+      <div class="brand">LENORMAND</div>
+      <div class="tagline">~ whispers from the sea ~</div>
     </header>
-
-    <section class="menu">
-
-      <button class="main-button" onclick="openReading(1)">
-        <div class="icon">🫧</div>
-        <div class="button-text">
-          <strong>1 CARD</strong>
-          <span>今日のテーマをみる</span>
-        </div>
-      </button>
-
-      <button class="main-button" onclick="openReading(3)">
-        <div class="icon">🐚</div>
-        <div class="button-text">
-          <strong>3 CARDS</strong>
-          <span>3枚で状況を読む</span>
-        </div>
-      </button>
-
-      <button class="main-button" onclick="alert('CARD LIBRARY は次の増築で♡')">
-        <div class="icon">🦪</div>
-        <div class="button-text">
-          <strong>CARD LIBRARY</strong>
-          <span>36枚のカードを学ぶ</span>
-        </div>
-      </button>
-
-    </section>
-
-    <div class="footer">~ whispers from the sea ~</div>
-
-  </main>
-
-
-  <!-- READING -->
-  <section id="reading" class="screen">
-
-    <button class="back" onclick="goHome()">← HOME</button>
-
-    <h2 id="readingTitle" class="reading-title">1 CARD</h2>
-    <div class="reading-note">心の中で質問を思い浮かべてください</div>
-
-    <button class="draw-button" onclick="drawCards()">
-      🐚 DRAW CARDS
-    </button>
-
-    <div id="cardArea" class="card-area"></div>
-
+    <div class="pearl-panel">
+      <button class="menu-btn" onclick="startReading(1)"><span>🫧</span><div><b>1 CARD</b><small>今日のテーマをみる</small></div></button>
+      <button class="menu-btn" onclick="startReading(3)"><span>🐚</span><div><b>3 CARDS</b><small>3枚で状況を読む</small></div></button>
+      <button class="menu-btn" onclick="showLibrary()"><span>🦪</span><div><b>CARD LIBRARY</b><small>36枚のカードを学ぶ</small></div></button>
+    </div>
+    <footer>~ whispers from the sea ~</footer>
   </section>
 
-</div>
+  <section id="setup" class="screen">
+    <button class="back" onclick="showScreen('home')">← HOME</button>
+    <div class="section-shell">🐚</div>
+    <h2 id="setupTitle">NEW READING</h2>
+    <p class="sub">質問を海にそっと預けてください</p>
+    <label class="field-label">QUESTION</label>
+    <textarea id="question" maxlength="180" placeholder="例：今の関係について知っておくことは？"></textarea>
 
-
-<script>
-
-const cards = [
-  {n:1,  en:"RIDER",       jp:"騎士",       icon:"🐎", key:"到来・知らせ・動き"},
-  {n:2,  en:"CLOVER",      jp:"クローバー", icon:"🍀", key:"幸運・チャンス・偶然"},
-  {n:3,  en:"SHIP",        jp:"船",         icon:"🚢", key:"移動・旅・距離"},
-  {n:4,  en:"HOUSE",       jp:"家",         icon:"🏠", key:"家庭・安心・基盤"},
-  {n:5,  en:"TREE",        jp:"木",         icon:"🌳", key:"成長・健康・時間"},
-  {n:6,  en:"CLOUDS",      jp:"雲",         icon:"☁️", key:"混乱・不透明・迷い"},
-  {n:7,  en:"SNAKE",       jp:"蛇",         icon:"🐍", key:"複雑・迂回・誘惑"},
-  {n:8,  en:"COFFIN",      jp:"棺",         icon:"⚰️", key:"終了・停止・区切り"},
-  {n:9,  en:"BOUQUET",     jp:"花束",       icon:"💐", key:"喜び・好意・贈り物"},
-  {n:10, en:"SCYTHE",      jp:"鎌",         icon:"🌾", key:"決断・切断・突然"},
-  {n:11, en:"WHIP",        jp:"鞭",         icon:"〰️", key:"反復・衝突・議論"},
-  {n:12, en:"BIRDS",       jp:"鳥",         icon:"🐦", key:"会話・緊張・噂"},
-  {n:13, en:"CHILD",       jp:"子ども",     icon:"👶", key:"始まり・小ささ・純粋"},
-  {n:14, en:"FOX",         jp:"狐",         icon:"🦊", key:"注意・策略・仕事"},
-  {n:15, en:"BEAR",        jp:"熊",         icon:"🐻", key:"力・保護・権威"},
-  {n:16, en:"STARS",       jp:"星",         icon:"⭐", key:"希望・導き・明晰"},
-  {n:17, en:"STORK",       jp:"コウノトリ", icon:"🪽", key:"変化・改善・移動"},
-  {n:18, en:"DOG",         jp:"犬",         icon:"🐕", key:"友情・信頼・忠誠"},
-  {n:19, en:"TOWER",       jp:"塔",         icon:"🏛️", key:"距離・孤立・組織"},
-  {n:20, en:"GARDEN",      jp:"庭園",       icon:"🌷", key:"社交・公の場・交流"},
-  {n:21, en:"MOUNTAIN",    jp:"山",         icon:"⛰️", key:"障害・停滞・壁"},
-  {n:22, en:"CROSSROADS",  jp:"道",         icon:"🛤️", key:"選択・分岐・複数"},
-  {n:23, en:"MICE",        jp:"ネズミ",     icon:"🐭", key:"消耗・減少・心配"},
-  {n:24, en:"HEART",       jp:"ハート",     icon:"❤️", key:"愛情・好意・喜び"},
-  {n:25, en:"RING",        jp:"指輪",       icon:"💍", key:"約束・契約・結びつき"},
-  {n:26, en:"BOOK",        jp:"本",         icon:"📕", key:"秘密・知識・未知"},
-  {n:27, en:"LETTER",      jp:"手紙",       icon:"✉️", key:"連絡・文書・メッセージ"},
-  {n:28, en:"GENTLEMAN",   jp:"紳士",       icon:"👨", key:"男性・重要人物"},
-  {n:29, en:"LADY",        jp:"淑女",       icon:"👩", key:"女性・重要人物"},
-  {n:30, en:"LILY",        jp:"百合",       icon:"⚜️", key:"成熟・平和・官能"},
-  {n:31, en:"SUN",         jp:"太陽",       icon:"☀️", key:"成功・幸福・活力"},
-  {n:32, en:"MOON",        jp:"月",         icon:"🌙", key:"感情・評価・直感"},
-  {n:33, en:"KEY",         jp:"鍵",         icon:"🔑", key:"確信・解決・重要"},
-  {n:34, en:"FISH",        jp:"魚",         icon:"🐟", key:"豊かさ・お金・流れ"},
-  {n:35, en:"ANCHOR",      jp:"錨",         icon:"⚓", key:"安定・継続・仕事"},
-  {n:36, en:"CROSS",       jp:"十字架",     icon:"✝️", key:"重荷・試練・運命"}
-];
-
-let drawCount = 1;
-
-function openReading(count) {
-  drawCount = count;
-
-  document.getElementById("home").classList.remove("active");
-  document.getElementById("reading").classList.add("active");
-
-  document.getElementById("readingTitle").textContent =
-    count === 1 ? "1 CARD" : "3 CARDS";
-
-  document.getElementById("cardArea").innerHTML = "";
-}
-
-function goHome() {
-  document.getElementById("reading").classList.remove("active");
-  document.getElementById("home").classList.add("active");
-}
-
-function drawCards() {
-
-  const shuffled = [...cards].sort(() => Math.random() - 0.5);
-  const selected = shuffled.slice(0, drawCount);
-
-  const area = document.getElementById("cardArea");
-
-  area.className =
-    drawCount === 3 ? "card-area three" : "card-area";
-
-  area.innerHTML = selected.map(card => `
-    <div class="card">
-      <div class="card-number">${card.n}</div>
-      <div class="card-symbol">${card.icon}</div>
-      <div class="card-name">${card.en}</div>
-      <div class="card-jp">${card.jp}</div>
-      <div class="card-keyword">${card.key}</div>
+    <label class="field-label">DRAW STYLE</label>
+    <div class="segmented">
+      <button id="virtualBtn" class="selected" onclick="setMode('virtual')">VIRTUAL</button>
+      <button id="physicalBtn" onclick="setMode('physical')">PHYSICAL</button>
     </div>
-  `).join("");
-}
 
-</script>
+    <div id="virtualArea">
+      <button class="primary" onclick="drawVirtual()">🐚 DRAW CARDS</button>
+    </div>
 
+    <div id="physicalArea" class="hidden">
+      <p class="hint">実物で引いたカードを記録してください</p>
+      <div id="physicalSelects"></div>
+      <button class="primary" onclick="submitPhysical()">結果を見る</button>
+    </div>
+  </section>
+
+  <section id="result" class="screen">
+    <button class="back" onclick="showScreen('setup')">← BACK</button>
+    <div class="section-shell">🐚</div>
+    <h2>YOUR READING</h2>
+    <div id="resultQuestion" class="question-card"></div>
+    <div id="resultCards" class="cards"></div>
+    <div class="combination">
+      <span>COMBINATION</span>
+      <strong id="comboNames"></strong>
+      <p id="comboHint"></p>
+    </div>
+    <button class="primary" onclick="copyPrompt()">🫧 AI READING PROMPT をコピー</button>
+    <div id="copyStatus" class="copy-status"></div>
+    <button class="secondary" onclick="newReading()">NEW READING</button>
+  </section>
+
+  <section id="library" class="screen">
+    <button class="back" onclick="showScreen('home')">← HOME</button>
+    <div class="section-shell">🦪</div>
+    <h2>CARD LIBRARY</h2>
+    <p class="sub">まずはCOREから。使いながら一緒に育てる36枚。</p>
+    <div id="libraryGrid" class="library-grid"></div>
+  </section>
+</div>
+<script src="app.js"></script>
 </body>
 </html>
